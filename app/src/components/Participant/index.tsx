@@ -1,19 +1,27 @@
 import { styles } from "./styles";
 import { Entypo } from "@expo/vector-icons"
-import { View, Text,TouchableOpacity} from "react-native";
+import { View, Text,TouchableOpacity, Alert} from "react-native";
 
 interface participantProps{
     id: string,
     name: string,
-    changeParticipantIdToDelete: (id:string) => void
-    changeModalState: () => void
+    deleteOneParticipant: (id:string) => void
 }
 
-export function Participant({name,id,changeParticipantIdToDelete,changeModalState}: participantProps){
+export function Participant({name,id,deleteOneParticipant}: participantProps){
    
-    function handleShowModal(){
-        changeParticipantIdToDelete(id)
-        changeModalState()
+    function handleDeleteOneParticipant(){
+        Alert.alert('Remover Participante', `Deseja Remover ${name}`,[
+            {
+                text: 'Não',
+                style: "cancel"
+            },
+            {
+                text: "Sim",
+                style: "destructive",
+                onPress: () => deleteOneParticipant(id)
+            }
+        ])
     }
 
     return(
@@ -23,7 +31,7 @@ export function Participant({name,id,changeParticipantIdToDelete,changeModalStat
         </View>
         <TouchableOpacity
             style={styles.button}
-            onPress={handleShowModal}
+            onPress={handleDeleteOneParticipant}
         >
             <Entypo name="minus" style={styles.minusIcon}/>
         </TouchableOpacity>

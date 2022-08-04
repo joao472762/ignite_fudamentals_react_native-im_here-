@@ -6,11 +6,11 @@ export default function App() {
   return (
     <>
       <StatusBar
-         translucent
-         style={'light'}
-          backgroundColor = 'transparent'
-       />
-       <Home/>
+        translucent
+        style={'light'}
+        backgroundColor = 'transparent'
+      />
+      <Home/>
     </>
   );
 }

@@ -7,7 +7,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList} from "react-native";
 import { styles } from "./styles";
 import { theme } from "../../global/styles";
 import { Participant } from "../../components/Participant";
-import { ParticipantModal } from "../../components/Modal";
+import { ListWithoutParticipants } from "./components/ListWithoutParticipants";
 
 interface Participants {
     id: string,
@@ -16,30 +16,18 @@ interface Participants {
 
 export function Home(){
     const [participantName, setParticipantName] = useState('')
-    const [modalIsVisible, setModalIsVisibel]  = useState(false)
     const [participants,setParticipants] = useState<Participants[]>([])
-    const [participantIdToDelete, setParticipantIdToDelete ] = useState('')
-
-    const participantToDelete = participants.find(participant => participant.id == participantIdToDelete)
-
+    
     const currentDate = new Date()
     const currentDateFomated =  format(currentDate, "eee ',' d MMMM 'de' yyyy",{
         locale: ptBR
     })
-    function changeParticipantIdToDelete(id: string){
-        setParticipantIdToDelete(() => id)
-    }
 
-    function changeModalState(){
-        modalIsVisible
-        ? setModalIsVisibel(false)
-        : setModalIsVisibel(true)
-    }
-   
     function handleAddNewPaticipant(){
         if(!participantName.length){
             return
         }
+    
         const newPaticipant: Participants = {
             id: currentDate.toISOString(),
             name: participantName
@@ -49,15 +37,14 @@ export function Home(){
         setParticipantName(() => '')
     }
     
-    function deleteOneParticipant(){
+    function deleteOneParticipant(id: string){
         const participantsWithoutOne = participants.filter(participant => {
-            return participant.id != participantIdToDelete
+            return participant.id != id
         })
 
         setParticipants(() => participantsWithoutOne)
     }
    
-    
     return(
         <View style={styles.homeContainer}>
 
@@ -82,39 +69,23 @@ export function Home(){
             </View>
 
             <Text style={styles.participantsHeader}>Participantes</Text>
-            {
-                participants.length 
-                ?(
-                    <FlatList
-                        showsVerticalScrollIndicator= {false}
-                        data={participants}
-                        keyExtractor= {item => item.id}
-                        renderItem={({item}) => {
-                            return( 
-                                <Participant 
-                                    id={item.id} 
-                                    name={item.name}
-                                    changeModalState= {changeModalState}
-                                    changeParticipantIdToDelete= {changeParticipantIdToDelete}
-                                /> 
-                            )
-                        }}
-                    />
 
-                )
-                :(
-                    <View style={styles.withoutParticipants}>
-                        <Text style={styles.withoutParticipantsMessage}>Ainda não há nenhum participante</Text>
-                    </View>
-                )
-            }
-            <ParticipantModal
-                animationType="fade"
-                visible= {modalIsVisible}
-                participantName= {participantToDelete?.name}
-                deleteOneParticipant = {deleteOneParticipant}
-                changeModalState={changeModalState}
-                />
+            <FlatList
+                data={participants}
+            
+                showsVerticalScrollIndicator= {false}
+                keyExtractor= {item => item.id}
+                renderItem={({item}) => {
+                    return( 
+                        <Participant 
+                        id={item.id} 
+                        name={item.name}
+                        deleteOneParticipant = {deleteOneParticipant}
+                        /> 
+                        )
+                    }}
+                ListEmptyComponent = {() => <ListWithoutParticipants/>}
+            /> 
         </View>
     )
 }

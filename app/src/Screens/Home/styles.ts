@@ -58,16 +58,4 @@ export const styles = StyleSheet.create({
         marginBottom: 20
     },
 
-    withoutParticipants:{
-        flex: 1,
-
-  
-        justifyContent: 'center'
-    },
-    withoutParticipantsMessage:{
-        textAlign: 'center',
-     
-        color: colors.white100,
-        fontWeight: "800",
-    }
 })
